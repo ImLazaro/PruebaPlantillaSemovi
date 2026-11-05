@@ -1,0 +1,11 @@
+<!-- Layout wrapper solo para rutas protegidas -->
+<app-layout-wrapper *ngIf="showLayout"></app-layout-wrapper>
+
+<!-- Router outlet directo para rutas sin layout (como login, 404, unauthorized) -->
+<router-outlet *ngIf="!showLayout"></router-outlet>
+
+<!-- Contenedor de notificaciones globales -->
+<app-notification-container></app-notification-container>
+
+<!-- Modal de carga global -->
+<app-loading-modal [isOpen]="loadingOpen" [config]="loadingConfig" [hasContent]="false" (modalClose)="loadingOpen = false"></app-loading-modal>

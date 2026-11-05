@@ -1,0 +1,702 @@
+/* ===========================================
+   SISTEMA DE BOTONES INSTITUCIONALES REUTILIZABLES
+   =========================================== */
+
+/* === BASE BUTTON STYLES === */
+.institutional-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  outline: none;
+  user-select: none;
+  white-space: nowrap;
+  line-height: 1.5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: perspective(1000px) translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, box-shadow;
+}
+
+.institutional-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring-shadow-primary), 0 0 0 2px color-mix(in srgb, white 60%, transparent);
+}
+
+.institutional-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.institutional-btn-state-default {
+  opacity: 1;
+}
+
+.institutional-btn-state-hover {
+  filter: brightness(1.02);
+}
+
+.institutional-btn-state-active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* === SHIMMER EFFECT === */
+.institutional-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg, 
+    transparent 25%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    transparent 75%
+  );
+  transition: left 0.6s ease;
+  z-index: var(--z-base);
+}
+
+.institutional-btn:hover::before {
+  left: 100%;
+}
+
+/* === BUTTON SIZES === */
+.institutional-btn-sm {
+  padding: var(--space-4) var(--space-12);
+  font-size: var(--font-size-xs, 0.75rem);
+  min-height: var(--interactive-size-xs);
+}
+
+.institutional-btn-md {
+  padding: var(--space-8) var(--space-16);
+  font-size: var(--font-size-sm, 0.875rem);
+  min-height: var(--interactive-size-sm);
+}
+
+.institutional-btn-lg {
+  padding: var(--space-12) var(--space-20);
+  font-size: var(--font-size-md, 1rem);
+  min-height: var(--interactive-size-md);
+}
+
+.institutional-btn-extra-large {
+  padding: var(--space-16) var(--space-32);
+  font-size: var(--font-size-lg, 1.125rem);
+  min-height: var(--interactive-size-lg, 3.5rem);
+}
+
+/* === FULL WIDTH === */
+.institutional-btn-full-width {
+  width: 100%;
+}
+
+/* === ICON ONLY CONTAINER === */
+.institutional-btn-icon-only-container {
+  aspect-ratio: 1;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.institutional-btn-icon-only-container.institutional-btn-sm {
+  width: var(--interactive-size-xs, 2rem);
+  height: var(--interactive-size-xs, 2rem);
+}
+
+.institutional-btn-icon-only-container.institutional-btn-md {
+  width: var(--interactive-size-sm, 2.5rem);
+  height: var(--interactive-size-sm, 2.5rem);
+}
+
+.institutional-btn-icon-only-container.institutional-btn-lg {
+  width: var(--interactive-size-md, 3rem);
+  height: var(--interactive-size-md, 3rem);
+}
+
+.institutional-btn-icon-only-container.institutional-btn-extra-large {
+  width: var(--interactive-size-lg, 3.5rem);
+  height: var(--interactive-size-lg, 3.5rem);
+}
+
+/* === PRIMARY BUTTON === */
+.institutional-btn-primary {
+  background-color: var(--btn-primary);
+  color: var(--btn-primary-text);
+  border: 2px solid var(--btn-primary);
+}
+
+.institutional-btn-primary:hover {
+  background-color: var(--btn-primary-hover);
+  border-color: var(--btn-primary-hover);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(139, 21, 56, 0.3);
+}
+
+.institutional-btn-primary:active {
+  background-color: var(--btn-primary-active);
+  border-color: var(--btn-primary-active);
+}
+
+/* === SECONDARY BUTTON === */
+.institutional-btn-secondary {
+  background-color: var(--btn-secondary);
+  color: var(--btn-secondary-text);
+  border: 2px solid var(--btn-secondary);
+}
+
+.institutional-btn-secondary:hover {
+  background-color: var(--btn-secondary-hover);
+  border-color: var(--btn-secondary-hover);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(214, 51, 132, 0.3);
+}
+
+.institutional-btn-secondary:active {
+  background-color: var(--btn-secondary-active);
+  border-color: var(--btn-secondary-active);
+}
+
+/* === SUCCESS BUTTON === */
+.institutional-btn-success {
+  background-color: var(--btn-success);
+  color: var(--btn-success-text);
+  border: 2px solid var(--btn-success);
+}
+
+.institutional-btn-success:hover {
+  background-color: var(--btn-success-hover);
+  border-color: var(--btn-success-hover);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.institutional-btn-success:active {
+  background-color: var(--btn-success-active);
+  border-color: var(--btn-success-active);
+}
+
+/* === WARNING BUTTON === */
+.institutional-btn-warning {
+  background-color: var(--btn-warning);
+  color: var(--btn-warning-text);
+  border: 2px solid var(--btn-warning);
+}
+
+.institutional-btn-warning:hover {
+  background-color: var(--btn-warning-hover);
+  border-color: var(--btn-warning-hover);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+}
+
+.institutional-btn-warning:active {
+  background-color: var(--btn-warning-active);
+  border-color: var(--btn-warning-active);
+}
+
+/* === DANGER BUTTON === */
+.institutional-btn-danger {
+  background-color: var(--btn-danger);
+  color: var(--btn-danger-text);
+  border: 2px solid var(--btn-danger);
+}
+
+.institutional-btn-danger:hover {
+  background-color: var(--btn-danger-hover);
+  border-color: var(--btn-danger-hover);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+}
+
+.institutional-btn-danger:active {
+  background-color: var(--btn-danger-active);
+  border-color: var(--btn-danger-active);
+}
+
+/* === INFO BUTTON === */
+.institutional-btn-info {
+  background-color: var(--btn-info);
+  color: var(--btn-info-text);
+  border: 2px solid var(--btn-info);
+}
+
+.institutional-btn-info:hover {
+  background-color: var(--btn-info-hover);
+  border-color: var(--btn-info-hover);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3);
+}
+
+.institutional-btn-info:active {
+  background-color: var(--btn-info-active);
+  border-color: var(--btn-info-active);
+}
+
+/* === LIGHT BUTTON === */
+.institutional-btn-light {
+  background-color: var(--btn-light);
+  color: var(--btn-light-text);
+  border: 2px solid var(--btn-light);
+}
+
+.institutional-btn-light:hover {
+  background-color: var(--btn-light-hover);
+  border-color: var(--btn-light-hover);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(241, 245, 249, 0.5);
+}
+
+.institutional-btn-light:active {
+  background-color: var(--btn-light-active);
+  border-color: var(--btn-light-active);
+}
+
+/* === DARK BUTTON === */
+.institutional-btn-dark {
+  background-color: var(--btn-dark);
+  color: var(--btn-dark-text);
+  border: 2px solid var(--btn-dark);
+}
+
+.institutional-btn-dark:hover {
+  background-color: var(--btn-dark-hover);
+  border-color: var(--btn-dark-hover);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(30, 41, 59, 0.3);
+}
+
+.institutional-btn-dark:active {
+  background-color: var(--btn-dark-active);
+  border-color: var(--btn-dark-active);
+}
+
+/* === LINK BUTTON === */
+.institutional-btn-link {
+  background-color: var(--btn-link);
+  color: var(--btn-link-text);
+  border: 2px solid transparent;
+  box-shadow: none;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.institutional-btn-link:hover {
+  background-color: var(--btn-link-hover);
+  transform: none;
+  box-shadow: none;
+  text-decoration: underline;
+}
+
+.institutional-btn-link:active {
+  background-color: var(--btn-link-active);
+}
+
+/* === GHOST BUTTON === */
+.institutional-btn-ghost {
+  background-color: var(--btn-ghost);
+  color: var(--btn-ghost-text);
+  border: 2px solid var(--btn-ghost-border);
+}
+
+.institutional-btn-ghost:hover {
+  background-color: var(--btn-ghost-hover);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(139, 21, 56, 0.15);
+}
+
+.institutional-btn-ghost:active {
+  background-color: var(--btn-ghost-active);
+}
+
+/* === MODAL CLOSE BUTTON === */
+.institutional-btn-modal-close {
+  background-color: var(--btn-modal-close);
+  color: var(--btn-modal-close-text);
+  border: 2px solid var(--btn-modal-close-border);
+  transition: all 0.2s ease;
+}
+
+.institutional-btn-modal-close:hover {
+  background-color: var(--btn-modal-close-hover);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.institutional-btn-modal-close:active {
+  background-color: var(--btn-modal-close-active);
+  transform: scale(0.95);
+}
+
+/* Estilos específicos para botones de cierre circulares */
+.institutional-btn-modal-close.institutional-btn-icon-only-container {
+  border-radius: 50%;
+  backdrop-filter: blur(4px);
+}
+
+/* === DISABLED STATE === */
+.institutional-btn-disabled,
+.institutional-btn:disabled {
+  background-color: var(--btn-disabled) !important;
+  color: var(--btn-disabled-text) !important;
+  border-color: var(--btn-disabled-border) !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.institutional-btn-disabled::before,
+.institutional-btn:disabled::before {
+  display: none;
+}
+
+/* === LOADING STATE === */
+.institutional-btn-loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* === RESPONSIVE ADJUSTMENTS === */
+@media (max-width: 640px) {
+  .institutional-btn {
+    padding: var(--space-8) var(--space-12);
+    font-size: var(--font-size-sm);
+  }
+  
+  .institutional-btn-lg,
+  .institutional-btn-extra-large {
+    padding: var(--space-10) var(--space-16);
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* === MOBILE ICON CENTERING FIXES === */
+@media (max-width: 768px) {
+  /* Mejorar centrado de iconos en botones de solo icono */
+  .institutional-btn-icon-only-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+  
+  /* Asegurar que los iconos Material Symbols se centren correctamente */
+  .institutional-btn-icon-only-container .material-symbols-outlined {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Centrado específico para móviles - sin cambiar tamaños */
+  .institutional-btn-icon-only-container .material-symbols-outlined {
+    margin: 0;
+    padding: 0;
+    width: 1em;
+    height: 1em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Centrado específico para móviles pequeños - sin cambiar tamaños */
+  .institutional-btn-icon-only-container .material-symbols-outlined {
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    transform: translate3d(0, 0, 0);
+  }
+  
+  /* Reducir gaps entre botones de acción en tabla */
+  .institucional-table-cell .flex.gap-2 {
+    gap: var(--space-4);
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* === FIXES PARA TOUCH DEVICES === */
+@media (hover: none) and (pointer: coarse) {
+  /* Centrado perfecto en dispositivos táctiles - mantener tamaños originales */
+  .institutional-btn-icon-only-container .material-symbols-outlined {
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ===========================================
+   BOTONES INSTITUCIONALES LEGACY (mantener compatibilidad)
+   =========================================== */
+/* === BOTONES institucional === */
+.btn-institucional-primary {
+  background-color: var(--institucional-primario);
+  color: white;
+  padding: var(--component-control-padding-block-md) var(--component-control-padding-inline-md);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(139, 21, 56, 0.2);
+  font-size: var(--font-size-sm);
+}
+
+.btn-institucional-primary:hover {
+  background-color: var(--institucional-primario-light);
+  box-shadow: 0 2px 6px rgba(139, 21, 56, 0.3);
+}
+
+.btn-institucional-primary:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(139, 21, 56, 0.2);
+}
+
+.btn-institucional-secondary {
+  background-color: var(--institucional-secundario);
+  color: white;
+  padding: var(--component-control-padding-block-md) var(--component-control-padding-inline-md);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(214, 51, 132, 0.2);
+  font-size: var(--font-size-sm);
+}
+
+.btn-institucional-secondary:hover {
+  background-color: var(--institucional-secundario-light);
+  box-shadow: 0 2px 6px rgba(214, 51, 132, 0.3);
+}
+
+.btn-institucional-secondary:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(214, 51, 132, 0.2);
+}
+
+.btn-institucional-outline {
+  background-color: transparent;
+  color: var(--institucional-primario);
+  border: 2px solid var(--institucional-primario);
+  padding: var(--component-control-padding-block-md) var(--component-control-padding-inline-md);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(139, 21, 56, 0.15);
+  transform: perspective(1000px) rotateX(0deg) translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, box-shadow, filter;
+}
+
+.btn-institucional-outline:hover {
+  background-color: var(--institucional-primario);
+  color: white;
+  transform: perspective(1000px) translateY(-8px) translateZ(20px) scale(1.05);
+  box-shadow: 
+    0 20px 40px rgba(139, 21, 56, 0.4),
+    0 0 30px rgba(139, 21, 56, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border-color: var(--institucional-primario-light);
+  filter: brightness(1.2) saturate(1.15) contrast(1.1);
+}
+
+.btn-institucional-outline:active {
+  transform: perspective(1000px) translateY(-2px) translateZ(10px) scale(0.98);
+  transition: all 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 
+    0 8px 20px rgba(139, 21, 56, 0.25),
+    0 0 15px rgba(139, 21, 56, 0.2);
+}
+
+/* ===========================================
+   EFECTOS ADICIONALES PARA BOTONES INSTITUCIONALES
+   Micro-interacciones y feedback visual mejorado
+   =========================================== */
+
+/* Efecto de shimmer/brillo que pasa por el botón en hover - MEJORADO */
+.btn-institucional-primary::before,
+.btn-institucional-secondary::before,
+.btn-institucional-outline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    110deg, 
+    transparent 25%, 
+    rgba(255, 255, 255, 0.4) 50%, 
+    transparent 75%
+  );
+  transition: left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: var(--z-base);
+  transform: skewX(-20deg);
+}
+
+.btn-institucional-primary:hover::before,
+.btn-institucional-secondary:hover::before,
+.btn-institucional-outline:hover::before {
+  left: 100%;
+  transition: left 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Outline buttons: same shimmer and glow but using institucional-guinda tones */
+.btn-institucional-outline::before {
+  /* softer guinda shimmer - override the default white shimmer */
+  background: linear-gradient(90deg, transparent, rgba(139,21,56,0.2), transparent) !important;
+}
+
+.btn-institucional-outline:hover::after {
+  /* internal glow using guinda tone - override the default white glow */
+  background: radial-gradient(circle, rgba(139,21,56,0.3) 0%, transparent 70%) !important;
+}
+
+/* Efecto de partículas o glow interno - MEJORADO */
+.btn-institucional-primary::after,
+.btn-institucional-secondary::after,
+.btn-institucional-outline::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(
+    circle, 
+    rgba(255, 255, 255, 0.5) 0%, 
+    rgba(255, 255, 255, 0.3) 40%, 
+    transparent 70%
+  );
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: var(--z-base);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.btn-institucional-primary:hover::after,
+.btn-institucional-secondary:hover::after,
+.btn-institucional-outline:hover::after {
+  width: var(--interactive-effect-glow-size);
+  height: var(--interactive-effect-glow-size);
+  opacity: 1;
+  animation: pulse-glow 2s infinite alternate;
+}
+
+/* Mejora en el texto para que aparezca sobre los efectos */
+.btn-institucional-primary > *,
+.btn-institucional-secondary > *,
+.btn-institucional-outline > * {
+  position: relative;
+  z-index: var(--z-content);
+}
+
+/* Efecto de loading/spinner incorporado para estados de carga */
+.btn-institucional-primary.loading,
+.btn-institucional-secondary.loading,
+.btn-institucional-outline.loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+
+.btn-institucional-primary.loading::before,
+.btn-institucional-secondary.loading::before,
+.btn-institucional-outline.loading::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--interactive-spinner-size);
+  height: var(--interactive-spinner-size);
+  margin: var(--interactive-spinner-offset) 0 0 var(--interactive-spinner-offset);
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: btn-spin 1s linear infinite;
+  z-index: var(--z-above);
+}
+
+@keyframes btn-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Efectos de éxito y error para feedback */
+.btn-institucional-primary.success,
+.btn-institucional-secondary.success {
+  background-color: var(--stats4) !important;
+  animation: btn-success 0.6s ease;
+}
+
+.btn-institucional-primary.error,
+.btn-institucional-secondary.error {
+  background-color: var(--stats5) !important;
+  animation: btn-error 0.6s ease;
+}
+
+@keyframes btn-success {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); background-color: var(--stats4); }
+  100% { transform: scale(1); }
+}
+
+@keyframes btn-error {
+  0% { transform: scale(1); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+  100% { transform: scale(1); }
+}
+
+/* === BOTONES TAILWIND PERSONALIZADOS === */
+.btn-primary {
+  @apply bg-gradient-to-r from-primary-700 to-primary-800 hover:from-primary-800 hover:to-primary-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-institucional;
+}
+
+.btn-secondary {
+  @apply bg-gradient-to-r from-secondary-500 to-secondary-600 hover:from-secondary-600 hover:to-secondary-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 transform hover:scale-105;
+}
+
+/* ===========================================
+   FIX: Restaurar familias de fuente para iconos
+   Debido a que el proyecto fuerza Montserrat globalmente con !important,
+   los spans usados para Material Symbols quedan con Montserrat y se ven como texto.
+   Aquí forzamos las familias correctas para icon fonts con selectores más específicos
+   para que los pictogramas se rendericen.
+   =========================================== */
+.material-symbols-outlined,
+.material-symbols-rounded,
+.material-symbols-sharp {
+  font-family: 'Material Symbols Outlined' !important;
+  /* valores por defecto sugeridos; pueden ajustarse por componente */
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24 !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}

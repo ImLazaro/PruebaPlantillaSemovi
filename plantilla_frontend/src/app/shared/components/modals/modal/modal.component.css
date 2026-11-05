@@ -1,0 +1,243 @@
+/* ===========================================
+   ESTILOS PARA MODALES INSTITUCIONALES
+   =========================================== */
+
+/* === CLASES BASE PARA MODALES INSTITUCIONALES === */
+.institutional-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-overlay);
+  padding: var(--space-16);
+}
+
+.institutional-modal-container {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  width: 100%;
+  max-width: var(--component-modal-width-md);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.institutional-modal-container.ui-state-hover {
+  box-shadow: 0 24px 40px -8px rgba(0, 0, 0, 0.2);
+}
+
+.institutional-modal-container.ui-state-active {
+  transform: scale(0.995);
+}
+
+.institutional-modal-container.ui-state-loading {
+  cursor: progress;
+}
+
+.institutional-modal-container.ui-state-disabled {
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.institutional-modal-header {
+  background-color: var(--institucional-primario);
+  color: #fff;
+  padding: var(--space-24);
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.institutional-modal-header:hover {
+  background-color: var(--institucional-primario-light);
+}
+
+.institutional-modal-header:focus-within {
+  background-color: var(--institucional-primario-dark);
+}
+
+.institutional-modal-title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0;
+  padding-right: var(--space-40);
+  color: #fff;
+}
+
+.institutional-modal-close {
+  position: absolute;
+  top: var(--space-16);
+  right: var(--space-16);
+  z-index: var(--z-above);
+}
+
+.institutional-modal-body {
+  background: #fff;
+  padding: var(--space-20);
+  flex: 1;
+  overflow-y: auto;
+  color: var(--institucional-neutro-oscuro);
+}
+
+.institutional-modal-footer {
+  background: #fff;
+  padding: var(--space-20);
+  border-top: none;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: var(--space-12);
+  justify-content: flex-end;
+  align-items: center;
+  flex-direction: row !important; /* Forzar dirección horizontal siempre */
+  flex-wrap: nowrap !important; /* Evitar que los botones se envuelvan a nueva línea */
+  min-height: var(--interactive-size-lg); /* Asegurar altura mínima para botones */
+}
+
+/* Asegurar que los botones en el footer permanezcan horizontales en móviles */
+.institutional-modal-footer > * {
+  flex-shrink: 0; /* Evitar que los botones se contraigan */
+}
+
+/* Específicamente para pantallas pequeñas */
+@media (max-width: 640px) {
+  .institutional-modal-footer {
+    padding: var(--space-16) var(--space-12);
+    gap: var(--space-8);
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-end; /* Mantener alineación a la derecha */
+    overflow-x: auto; /* Permitir scroll horizontal si es necesario */
+  }
+  
+  /* Asegurar que los botones mantengan tamaño mínimo pero sean visibles */
+  .institutional-modal-footer > button,
+  .institutional-modal-footer > .btn {
+    min-width: var(--interactive-size-xl); /* Tamaño mínimo para legibilidad */
+    flex-shrink: 0; /* No permitir que se contraigan */
+    white-space: nowrap; /* Evitar que el texto se envuelva */
+  }
+  
+  /* Para botones específicos del modal como app-institutional-button */
+  .institutional-modal-footer app-institutional-button {
+    flex-shrink: 0;
+    min-width: var(--interactive-size-xl);
+    display: inline-flex !important; /* Hacer que el componente no tome todo el ancho */
+  }
+  
+  /* Sobrescribir full-width en el contexto del modal footer para móviles */
+  .institutional-modal-footer .institutional-btn-full-width {
+    width: auto !important;
+    min-width: var(--interactive-size-xl);
+    flex-shrink: 0;
+  }
+  
+  /* Asegurar que el contenedor del footer tenga scroll horizontal si es necesario */
+  .institutional-modal-footer {
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling en iOS */
+  }
+}
+
+/* === VARIANTES DE TAMAÑO === */
+.institutional-modal-container.size-sm {
+  max-width: var(--component-modal-width-sm);
+}
+
+.institutional-modal-container.size-md {
+  max-width: var(--component-modal-width-md);
+}
+
+.institutional-modal-container.size-lg {
+  max-width: var(--component-modal-width-lg);
+}
+
+.institutional-modal-container.size-xl {
+  max-width: var(--component-modal-width-xl);
+}
+
+.institutional-modal-container.size-full {
+  max-width: 95vw;
+  max-height: 95vh;
+}
+
+/* === ESTILOS PARA TEXTO SECUNDARIO === */
+.institutional-modal-secondary-text {
+  color: var(--institucional-neutro-claro);
+}
+
+.institutional-modal-wine-text {
+  color: var(--institucional-vino-light);
+}
+
+/* === ANIMACIONES PARA MODALES INSTITUCIONALES === */
+.institutional-modal-overlay.entering {
+  animation: institutional-modal-backdrop-in 0.3s ease-out;
+}
+
+.institutional-modal-container.entering {
+  animation: institutional-modal-content-in 0.4s ease-out;
+}
+
+@keyframes institutional-modal-backdrop-in {
+  from { 
+    opacity: 0; 
+  }
+  to { 
+    opacity: 1; 
+  }
+}
+
+@keyframes institutional-modal-content-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(calc(-1 * var(--space-16)));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* === MEJORAS DE ACCESIBILIDAD PARA MODALES === */
+@media (prefers-reduced-motion: reduce) {
+  .institutional-modal-overlay.entering,
+  .institutional-modal-container.entering {
+    animation: none;
+  }
+}
+
+/* === RESPONSIVIDAD === */
+@media (max-width: 640px) {
+  .institutional-modal-overlay {
+    padding: var(--space-8);
+  }
+  
+  .institutional-modal-container {
+    max-width: 100%;
+    max-height: 95vh;
+  }
+  
+  .institutional-modal-header {
+    padding: var(--space-16);
+  }
+  
+  .institutional-modal-body {
+    padding: var(--space-16);
+  }
+  
+  .institutional-modal-footer {
+    padding: var(--space-16);
+    flex-direction: column;
+  }
+  
+  .institutional-modal-footer > * {
+    width: 100%;
+  }
+}

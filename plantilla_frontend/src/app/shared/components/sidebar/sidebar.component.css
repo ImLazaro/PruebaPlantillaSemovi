@@ -1,0 +1,434 @@
+/* ===========================================
+   ALINEACIÓN DE TEXTO EN BOTONES DEL SIDEBAR
+   Los botones del sidebar deben tener el texto alineado a la izquierda
+   =========================================== */
+/* Sobrescribir la alineación centrada para botones del sidebar */
+.sidebar-nav button,
+.sidebar-nav .button,
+.sidebar-nav [role="button"],
+.sidebar-nav a[class*="flex"],
+.sidebar-nav .menu-item,
+button[class*="sidebar"],
+.sidebar-item button,
+.sidebar-item .button,
+.sidebar-item [role="button"] {
+  justify-content: flex-start !important;
+  text-align: left !important;
+}
+
+/* Asegurar que el texto dentro de los botones del sidebar esté alineado a la izquierda */
+.sidebar-nav button span,
+.sidebar-nav .button span,
+.sidebar-nav [role="button"] span,
+.sidebar-nav a span,
+.sidebar-item button span,
+.sidebar-item .button span,
+.sidebar-item [role="button"] span {
+  text-align: left !important;
+  flex: 1;
+}
+
+/* Los iconos del sidebar deben mantenerse del lado izquierdo */
+.sidebar-nav button app-universal-icon,
+.sidebar-nav button .material-symbols-outlined,
+.sidebar-nav button .material-icons,
+.sidebar-nav button i[class*="bi-"],
+.sidebar-item button app-universal-icon,
+.sidebar-item button .material-symbols-outlined,
+.sidebar-item button .material-icons,
+.sidebar-item button i[class*="bi-"] {
+  /* Removed margin-right to avoid automatic spacing; use layout markup to add explicit spacing when needed */
+  flex-shrink: 0;
+}
+
+/* Scrollbar sutil para navegación del sidebar */
+.sidebar-nav::-webkit-scrollbar { 
+  width: 8px; 
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb { 
+  background: rgba(139,21,56,0.06); 
+  border-radius: 8px; 
+}
+
+.sidebar-nav::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+/* ===========================================
+   MEJORA DE JERARQUÍA PARA EL SIDEBAR
+   - Agrupaciones con título
+   - Separadores visuales
+   - Indentación para subitems
+   - Tipografía y contraste mejorados
+   =========================================== */
+
+/* Contenedor de sección (grupo) dentro del sidebar */
+.sidebar-section {
+  padding: 0.25rem 0.5rem 0.75rem 0.5rem;
+  margin: 0.5rem 0.5rem 0 0.5rem;
+  border-radius: 0.5rem;
+}
+
+/* Título de grupo / encabezado de sección */
+.sidebar-group-title {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: rgba(17,24,39,0.65); /* gris oscuro semi-transparente */
+  padding: 0.5rem 0.75rem;
+  text-transform: uppercase;
+}
+
+/* Separador sutil entre grupos */
+.sidebar-divider {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(17,24,39,0.04), rgba(139,21,56,0.04));
+  margin: 0.25rem 0.5rem 0.5rem 0.5rem;
+  border-radius: 2px;
+}
+
+/* Estilos base para items: deja espacio, alinea texto a la izquierda y añade contraste en hover */
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  margin: 0.125rem 0.25rem;
+  border-radius: 0.5rem;
+  color: rgba(17,24,39,0.9);
+  transition: background 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
+}
+
+.sidebar-item .item-text {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: inherit;
+}
+
+/* Subitems: ligera sangría e icono reducido */
+.sidebar-subitem {
+  padding-left: 0.5rem !important; /* el contenedor .sidebar-submenu ya tiene pl-6 (1.5rem) */
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+  justify-content: flex-start !important;
+}
+
+.sidebar-subitem .item-text {
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: rgba(17,24,39,0.78);
+}
+
+/* Hover y foco más evidente en items */
+.sidebar-item:hover, .sidebar-subitem:hover {
+  background: rgba(139,21,56,0.04);
+  transform: translateX(2px);
+  box-shadow: 0 4px 10px rgba(11,15,17,0.03);
+}
+
+/* Estado seleccionado más legible (respetar variable existente) */
+.sidebar-item.sidebar-selected-item, .sidebar-subitem.sidebar-selected-subitem {
+  background: rgba(139,21,56,0.98) !important;
+  color: #ffffff !important;
+  border-right: 4px solid var(--institucional-secundario);
+}
+
+/* Forzar texto blanco en todos los elementos hijos del item seleccionado */
+.sidebar-item.sidebar-selected-item *,
+.sidebar-subitem.sidebar-selected-subitem * {
+  color: #ffffff !important;
+}
+
+/* Icono del item seleccionado */
+.sidebar-item.sidebar-selected-item app-universal-icon,
+.sidebar-subitem.sidebar-selected-subitem app-universal-icon {
+  color: #ffffff !important;
+}
+
+/* Badge o contador a la derecha */
+.sidebar-item .item-badge {
+  margin-left: auto;
+  font-size: 0.75rem;
+  background: rgba(0,0,0,0.04);
+  color: rgba(17,24,39,0.7);
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+}
+
+/* Compact mode: si el sidebar se colapsa, esconder textos y centrar iconos */
+body.sidebar-collapsed .sidebar-item .item-text,
+body.sidebar-collapsed .sidebar-group-title {
+  display: none !important;
+}
+
+body.sidebar-collapsed .sidebar-item {
+  justify-content: center !important;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+/* Asegurar que los iconos mantengan tamaño uniforme */
+.sidebar-item app-universal-icon, .sidebar-item .material-symbols-outlined, .sidebar-item .material-icons, .sidebar-item i[class*="bi-"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  min-width: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mejora de accesibilidad: foco claro en items */
+.sidebar-item:focus-visible, .sidebar-subitem:focus-visible {
+  outline: 2px solid var(--institucional-secundario);
+  outline-offset: -2px;
+}
+
+/* ===========================================
+   ESTILOS ESPECÍFICOS PARA SIDEBAR COLAPSADO
+   =========================================== */
+.sidebar-component {
+  transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+  will-change: width, transform;
+}
+
+/* Forzar width específicos para evitar conflictos */
+.sidebar-component.w-64 {
+  width: 16rem !important;
+}
+
+.sidebar-component.w-16 {
+  width: 4rem !important;
+}
+
+.sidebar-component.w-0 {
+  width: 0 !important;
+  min-width: 0 !important;
+}
+
+/* Efectos de hover para items en sidebar colapsado */
+.sidebar-component .sidebar-item {
+  position: relative;
+}
+
+/* Tooltip para sidebar colapsado */
+.sidebar-component .sidebar-item[title]:hover::after {
+  content: attr(title);
+  position: fixed;
+  left: calc(4rem + 0.5rem); /* 4rem es el ancho del sidebar colapsado + margen */
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--institucional-primario);
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  white-space: nowrap;
+  z-index: 9999;
+  font-size: 0.875rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  animation: tooltipFadeIn 0.2s ease-out forwards;
+  pointer-events: none;
+}
+
+/* Flecha del tooltip */
+.sidebar-component .sidebar-item[title]:hover::before {
+  content: '';
+  position: fixed;
+  left: calc(4rem + 0.25rem); /* Posición de la flecha */
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0.25rem solid transparent;
+  border-right-color: var(--institucional-primario);
+  z-index: 9999;
+  opacity: 0;
+  animation: tooltipFadeIn 0.2s ease-out forwards;
+  pointer-events: none;
+}
+
+/* Animación del tooltip */
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+/* Ocultar tooltips en móvil */
+@media (max-width: 1024px) {
+  .sidebar-component .sidebar-item[title]:hover::after,
+  .sidebar-component .sidebar-item[title]:hover::before {
+    display: none !important;
+  }
+}
+
+/* Asegurar que el sidebar no interfiera con el layout */
+.sidebar-component {
+  flex-shrink: 0;
+  overflow: visible; /* Permitir que los tooltips se muestren fuera del contenedor */
+}
+
+/* Específicamente para tooltips del sidebar colapsado */
+.sidebar-component.w-16 {
+  overflow: visible !important;
+}
+
+/* Mejoras para las transiciones del sidebar */
+.sidebar-component {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: width, transform;
+}
+
+/* Estados del sidebar con anchos forzados */
+.sidebar-component.w-64 {
+  width: 16rem !important;
+  min-width: 16rem !important;
+}
+
+.sidebar-component.w-16 {
+  width: 4rem !important;
+  min-width: 4rem !important;
+}
+
+.sidebar-component.w-0 {
+  width: 0 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Comportamiento específico para móvil */
+@media (max-width: 1023px) {
+  .sidebar-component {
+    width: 16rem !important; /* Forzar ancho completo en móvil cuando está abierto */
+    overflow-y: auto !important; /* Permitir scroll en móvil */
+    overflow-x: hidden !important;
+    background-color: white !important; /* Forzar fondo blanco */
+  }
+  
+  /* Asegurar que el sidebar se muestre correctamente en móvil */
+  .sidebar-component.fixed {
+    height: 100vh !important;
+    height: 100dvh !important; /* Para soporte de viewport dinámico */
+  }
+  
+  /* Ocultar completamente cuando está cerrado en móvil */
+  .sidebar-component.-translate-x-full {
+    transform: translateX(-100%) !important;
+  }
+  
+  /* Remover cualquier outline o ring focus en móvil para el sidebar */
+  .sidebar-component,
+  .sidebar-component *,
+  .sidebar-component *:focus,
+  .sidebar-component *:active {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  
+  /* Asegurar que los enlaces sean clickeables en móvil (pero no sobrescribir los seleccionados) */
+  .sidebar-component .sidebar-item:not(.sidebar-selected-item) {
+    position: relative !important;
+    z-index: 10 !important;
+    pointer-events: auto !important;
+    background-color: transparent !important;
+  }
+  
+  .sidebar-component .sidebar-item:focus,
+  .sidebar-component .sidebar-item:active {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Asegurar que no hay overlays o pseudo-elementos interfiriendo */
+  .sidebar-component .sidebar-item:before,
+  .sidebar-component .sidebar-item:after {
+    display: none !important;
+  }
+}
+
+/* Mejorar la transición del contenido del sidebar */
+.sidebar-component .transition-all {
+  transition-property: opacity, width, margin, padding;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+}
+
+/* Animaciones específicas del sidebar */
+.sidebar-component {
+  transition: width 0.3s ease-in-out, transform 0.3s ease-in-out !important;
+}
+
+.sidebar-component .sidebar-item {
+  transition: all 0.2s ease-in-out;
+}
+
+.sidebar-component .sidebar-item span {
+  transition: opacity 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+/* Asegurar que las transiciones de width funcionen correctamente */
+.sidebar-component.w-64 {
+  width: 16rem;
+}
+
+.sidebar-component.w-16 {
+  width: 4rem;
+}
+
+.sidebar-component.w-0 {
+  width: 0rem;
+}
+
+/* Mejoras para tooltips en posición fija */
+@media (min-width: 1024px) {
+  .sidebar-component .sidebar-item[title]:hover::after {
+    left: calc(4rem + 0.5rem) !important; /* Para sidebar colapsado */
+  }
+  
+  .sidebar-component .sidebar-item[title]:hover::before {
+    left: calc(4rem + 0.25rem) !important; /* Para flecha del tooltip */
+  }
+}
+
+/* Asegurar que tooltips no aparezcan en móvil o cuando no está colapsado */
+@media (max-width: 1023px) {
+  .sidebar-component .sidebar-item[title]:hover::after,
+  .sidebar-component .sidebar-item[title]:hover::before {
+    display: none !important;
+  }
+}
+
+/* Cuando el sidebar no está colapsado, no mostrar tooltips */
+.sidebar-component:not(.w-16) .sidebar-item[title]:hover::after,
+.sidebar-component:not(.w-16) .sidebar-item[title]:hover::before {
+  display: none !important;
+}
+
+/* Mejorar el scroll en móvil */
+@media (max-width: 1023px) {
+  .sidebar-component .sidebar-nav {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+}
+
+/* Overlay reutilizable para sidebars (móvil/modal) */
+.sidebar-overlay {
+  background-color: rgba(0,0,0,0.7); /* valor por defecto, controlable aquí */
+  backdrop-filter: none; /* no difuminar por defecto */
+  -webkit-tap-highlight-color: transparent; /* evitar highlight azul en móvil */
+}
+
+/* Si se desea overlay más sutil, usar .sidebar-overlay--soft */
+.sidebar-overlay--soft {
+  background-color: rgba(0,0,0,0.45);
+}
+
+
+

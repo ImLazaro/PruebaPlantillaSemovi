@@ -1,0 +1,40 @@
+<div class="bg-white/95 border-t-4 mb-5 border-institucional-primario rounded-lg shadow-md px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-4">
+  <!-- Left: Title and Subtitle -->
+  <div class="flex-1 min-w-0">
+    <h1
+      class="text-lg sm:text-xl font-bold text-institucional-primario break-words sm:truncate"
+      [title]="title">
+      {{ title }}
+    </h1>
+    @if (subtitle) {
+      <p
+        class="text-xs sm:text-sm text-gray-600 break-words sm:truncate"
+        [title]="subtitle">
+        {{ subtitle }}
+      </p>
+    }
+  </div>
+
+  <!-- Right: Action Buttons -->
+  <div class="flex items-center gap-2 flex-shrink-0">
+    <!-- Back Button -->
+    @if (showBackButton) {
+      <app-institutional-button
+        [config]="{ variant: 'ghost', size: 'md', icon: 'arrow_back', iconPosition: 'left', ariaLabel: backText }"
+        (clicked)="navigateBack()">
+        <span class="hidden sm:inline">{{ backText }}</span>
+      </app-institutional-button>
+    }
+
+    <!-- Action Button -->
+    @if (actionButton) {
+      <app-institutional-button
+        [config]="{ variant: 'primary', size: 'md', icon: actionButton.icon, iconPosition: 'left', ariaLabel: actionButton.text }"
+        [disabled]="actionButton.disabled || false"
+        (clicked)="onActionButton()">
+        <span class="hidden sm:inline">{{ actionButton.text }}</span>
+        <span class="sm:hidden">{{ actionButton.text.split(' ')[0] }}</span>
+      </app-institutional-button>
+    }
+  </div>
+</div>

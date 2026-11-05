@@ -1,0 +1,89 @@
+/* ===========================================
+   TOKENS SEMÁNTICOS (layout + interacción)
+   =========================================== */
+
+:root {
+  /* Escala única de spacing (base 8px) */
+  --space-0: 0;
+  --space-base: 0.5rem;
+  --space-4: calc(var(--space-base) / 2);
+  --space-8: 0.5rem;
+  --space-12: calc(var(--space-base) * 1.5);
+  --space-16: calc(var(--space-base) * 2);
+  --space-20: calc(var(--space-base) * 2.5);
+  --space-24: calc(var(--space-base) * 3);
+  --space-28: calc(var(--space-base) * 3.5);
+  --space-32: calc(var(--space-base) * 4);
+  --space-40: calc(var(--space-base) * 5);
+  --space-48: calc(var(--space-base) * 6);
+  --space-56: calc(var(--space-base) * 7);
+  --space-64: calc(var(--space-base) * 8);
+
+  /* Alias de spacing semántico (compatibilidad gradual) */
+  --spacing-2xs: var(--space-4);
+  --spacing-xs: var(--space-8);
+  --spacing-sm: var(--space-12);
+  --spacing-md: var(--space-16);
+  --spacing-lg: var(--space-24);
+  --spacing-xl: var(--space-32);
+
+  /* Radius */
+  --radius-none: 0;
+  --radius-sm: var(--space-4);
+  --radius-md: var(--space-8);
+  --radius-lg: var(--space-12);
+  --radius-xl: var(--space-16);
+  --radius-pill: 999px;
+  --radius-full: 9999px;
+
+  /* Focus ring */
+  --focus-ring-size-sm: 2px;
+  --focus-ring-size-md: 3px;
+  --focus-ring-primary: rgba(139, 21, 56, 0.12);
+  --focus-ring-primary-strong: rgba(139, 21, 56, 0.3);
+  --focus-ring-danger: rgba(239, 68, 68, 0.12);
+
+  /* Z-index */
+  --z-base: 1;
+  --z-content: 2;
+  --z-above: 3;
+  --z-sticky: 20;
+  --z-overlay: 50;
+  --z-modal: 1000;
+  --z-popover: 9999;
+
+  /* Typography scale */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+
+  /* Component size mapping */
+  --component-control-height-sm: var(--interactive-size-xs);
+  --component-control-height-md: var(--interactive-size-sm);
+  --component-control-height-lg: var(--interactive-size-md);
+  --component-control-padding-inline-sm: var(--space-12);
+  --component-control-padding-inline-md: var(--space-16);
+  --component-control-padding-inline-lg: var(--space-20);
+  --component-control-padding-block-sm: var(--space-4);
+  --component-control-padding-block-md: var(--space-8);
+  --component-control-padding-block-lg: var(--space-12);
+  --component-modal-width-sm: 20rem;
+  --component-modal-width-md: 28rem;
+  --component-modal-width-lg: 42rem;
+  --component-modal-width-xl: 56rem;
+}
+
+/* Mapeo a utilidades existentes de spacing (tailwind: p-1/p-2/p-3/p-4, etc.) */
+.u-gap-4 { gap: var(--space-4); }
+.u-gap-8 { gap: var(--space-8); }
+.u-gap-12 { gap: var(--space-12); }
+.u-gap-16 { gap: var(--space-16); }
+.u-gap-24 { gap: var(--space-24); }
+
+.u-p-4 { padding: var(--space-4); }
+.u-p-8 { padding: var(--space-8); }
+.u-p-12 { padding: var(--space-12); }
+.u-p-16 { padding: var(--space-16); }
+.u-p-24 { padding: var(--space-24); }

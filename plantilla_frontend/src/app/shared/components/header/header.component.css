@@ -1,0 +1,8 @@
+/* Header Component Styles */
+.header-button:hover {
+  transform: translateY(-1px);
+}
+
+.header-button:active {
+  transform: translateY(0);
+}
