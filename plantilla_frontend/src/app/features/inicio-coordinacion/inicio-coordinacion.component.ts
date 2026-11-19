@@ -1,134 +1,227 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { FormControl } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AvatarComponent } from '@/app/shared/components/avatar/avatar.component';
+import { AsyncStateWrapperComponent } from '@/app/shared/components/async-state-wrapper/async-state-wrapper.component';
+import { DashboardHeaderComponent } from '@/app/shared/components/dashboard-header/dashboard-header.component';
+import { EntityStatusPillComponent } from '@/app/shared/components/entity-status-pill/entity-status-pill.component';
+import { InputComponent } from '@/app/shared/components/inputs/input-wrapper/input.component';
+import { InstitutionalButtonComponent } from '@/app/shared/components/buttons/institutional-button/institutional-button.component';
+import { KpiCardComponent } from '@/app/shared/components/kpi-card/kpi-card.component';
+import { ModalComponent } from '@/app/shared/components/modals/modal/modal.component';
+import { PillTab, PillTabsComponent } from '@/app/shared/components/pill-tabs/pill-tabs.component';
 import { NotificationService } from '@/app/shared/lib/services/notification.service';
-import { OidcAuthService } from '@/app/core/auth';
-import { AlertaModificacionDto, ValidarAlertaDto } from './models/inicio-coordinacion.models';
-import { InicioCoordinacionStore } from './services/inicio-coordinacion.store';
-import { ResumenAreasComponent } from './components/resumen-areas/resumen-areas.component';
-import { MonitorCumplimientoComponent } from './components/monitor-cumplimiento/monitor-cumplimiento.component';
-import { AlertasModificacionesComponent } from './components/alertas-modificaciones/alertas-modificaciones.component';
-import { AlertaDetalleModalComponent } from './components/alerta-detalle-modal/alerta-detalle-modal.component';
+import { AlertaModificacionDto, ESTATUS_ALERTA_MAP } from '../models/alert-validation.model';
+import { InicioCoordinacionStore } from '../services/coordination.service';
+import { CurrentUserService } from '../services/current-user.service';
+import { ComplianceMonitorComponent } from './compliance-monitor/compliance-monitor.component';
+import { ExtemporaneousAlertsComponent } from './extemporaneous-alerts/extemporaneous-alerts.component';
 
-interface SeccionNav {
-  id: string;
-  label: string;
-  disponible: boolean;
-}
-
-/** Pantalla de inicio de la Coordinación Técnica (SISER 2.0). */
+/**
+ * Pantalla de inicio de la Coordinación Técnica (SISER 2.0).
+ * Datos: `InicioCoordinacionStore` (features/services/coordination.service.ts).
+ */
 @Component({
   selector: 'app-inicio-coordinacion',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    AvatarComponent,
-    ResumenAreasComponent,
-    MonitorCumplimientoComponent,
-    AlertasModificacionesComponent,
-    AlertaDetalleModalComponent,
+    DatePipe,
+    AsyncStateWrapperComponent,
+    DashboardHeaderComponent,
+    EntityStatusPillComponent,
+    InputComponent,
+    InstitutionalButtonComponent,
+    KpiCardComponent,
+    ModalComponent,
+    PillTabsComponent,
+    ComplianceMonitorComponent,
+    ExtemporaneousAlertsComponent,
   ],
   template: `
     <div class="flex flex-col gap-4">
-      <header class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 class="text-xl font-bold text-gray-900">SISER 2.0</h1>
-          <p class="text-xs text-gray-500">Coordinación Técnica · Supervisión institucional</p>
-        </div>
-        <div class="flex items-center gap-3 border border-gray-200 rounded-xl px-3 py-2 self-start sm:self-auto">
-          <app-avatar [name]="usuario.nombre" [config]="{ size: 'sm', variant: 'primary' }"></app-avatar>
-          <div class="leading-tight">
-            <p class="text-sm font-semibold text-gray-900">{{ usuario.area }}</p>
-            <p class="text-xs text-gray-500">{{ usuario.nombre }}</p>
-          </div>
-        </div>
-      </header>
+      <app-dashboard-header
+        title="SISER 2.0"
+        subtitle="Coordinación Técnica · Supervisión institucional"
+        [userName]="usuario.nombre"
+        [userTitle]="usuario.area">
+      </app-dashboard-header>
 
-      <nav class="bg-white rounded-xl shadow-sm border border-gray-100 p-2" aria-label="Secciones de coordinación">
-        <ul class="flex flex-wrap gap-2">
-          @for (s of secciones; track s.id) {
-            <li>
-              <button
-                type="button"
-                class="px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wide border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-institucional-guinda"
-                [class]="s.id === seccionActiva()
-                  ? 'bg-institucional-guinda text-white border-institucional-guinda'
-                  : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'"
-                [attr.aria-current]="s.id === seccionActiva() ? 'page' : null"
-                [disabled]="!s.disponible"
-                [title]="s.disponible ? s.label : 'Próximamente'"
-                (click)="seccionActiva.set(s.id)">
-                {{ s.label }}
-              </button>
-            </li>
-          }
-        </ul>
-      </nav>
+      <app-pill-tabs
+        [tabs]="secciones"
+        [activeId]="seccionActiva()"
+        ariaLabel="Secciones de coordinación"
+        (tabChange)="seccionActiva.set($event)">
+      </app-pill-tabs>
 
-      <app-resumen-areas
-        [resumen]="store.resumen().data"
-        [loading]="store.resumen().loading"
-        [error]="store.resumen().error"
+      <app-async-state-wrapper
+        [loading]="store.resumen().loading && !store.resumen().data"
+        [hasError]="!!store.resumen().error"
+        [errorMessage]="store.resumen().error ?? ''"
+        skeletonVariant="card"
         (retry)="store.cargarResumen()">
-      </app-resumen-areas>
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4" aria-label="Resumen de áreas">
+          <app-kpi-card
+            title="Total de Áreas Registradas"
+            [value]="store.resumen().data?.totalAreas ?? 0"
+            description="Áreas institucionales bajo seguimiento semanal."
+            badgeLabel="Total">
+          </app-kpi-card>
+          <app-kpi-card
+            title="Áreas Al Día"
+            [value]="store.resumen().data?.areasAlDia ?? 0"
+            description="Áreas con reporte semanal actualizado y sin rezago."
+            badgeLabel="Al corriente"
+            badgeVariant="success"
+            tone="success">
+          </app-kpi-card>
+          <app-kpi-card
+            title="Áreas Con Rezago"
+            [value]="store.resumen().data?.areasConRezago ?? 0"
+            description="Áreas con reporte atrasado o sin actualización reciente."
+            badgeLabel="Rezago"
+            badgeVariant="danger"
+            tone="danger">
+          </app-kpi-card>
+        </section>
+      </app-async-state-wrapper>
 
-      <app-monitor-cumplimiento
+      <app-compliance-monitor
         [items]="store.cumplimiento().data"
         [meta]="store.cumplimientoMeta()"
         [loading]="store.cumplimiento().loading"
         [error]="store.cumplimiento().error"
         (pageChange)="store.cargarCumplimiento($event)"
         (retry)="store.cargarCumplimiento(store.cumplimientoMeta().page)">
-      </app-monitor-cumplimiento>
+      </app-compliance-monitor>
 
-      <app-alertas-modificaciones
+      <app-extemporaneous-alerts
         [items]="store.alertas().data"
         [loading]="store.alertas().loading"
         [error]="store.alertas().error"
-        [actualizado]="store.alertasActualizadas()"
-        (verDetalle)="alertaSeleccionada.set($event)"
+        [updatedAt]="store.alertasActualizadas()"
+        (viewDetail)="abrirDetalle($event)"
         (retry)="store.cargarAlertas(store.alertasMeta().page)">
-      </app-alertas-modificaciones>
+      </app-extemporaneous-alerts>
     </div>
 
-    <app-alerta-detalle-modal
-      [alerta]="alertaSeleccionada()"
-      [guardando]="validando()"
-      (validar)="onValidar($event)"
-      (cerrar)="alertaSeleccionada.set(null)">
-    </app-alerta-detalle-modal>
+    <!-- Detalle y validación de alerta -->
+    <app-modal
+      [isOpen]="!!alertaSeleccionada()"
+      title="Detalle de modificación extemporánea"
+      [subtitle]="alertaSeleccionada()?.area ?? ''"
+      size="md"
+      [trapFocus]="true"
+      (modalClose)="cerrarDetalle()">
+      @if (alertaSeleccionada(); as a) {
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
+          <div>
+            <dt class="text-xs uppercase tracking-wide text-gray-500">Fecha y hora</dt>
+            <dd class="font-semibold text-gray-900">{{ a.fechaHora | date: "dd/MM/yyyy '·' HH:mm" }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs uppercase tracking-wide text-gray-500">Semana afectada</dt>
+            <dd class="font-semibold text-gray-900">Semana {{ a.semanaAfectada }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs uppercase tracking-wide text-gray-500">Estatus</dt>
+            <dd><app-entity-status-pill [status]="a.estatus" [map]="estatusAlerta"></app-entity-status-pill></dd>
+          </div>
+          <div>
+            <dt class="text-xs uppercase tracking-wide text-gray-500">Memorándum / Oficio</dt>
+            <dd class="font-mono text-xs text-gray-900">{{ a.folio || 'Sin folio registrado' }}</dd>
+          </div>
+          @if (a.descripcion) {
+            <div class="sm:col-span-2">
+              <dt class="text-xs uppercase tracking-wide text-gray-500">Descripción</dt>
+              <dd class="text-gray-700">{{ a.descripcion }}</dd>
+            </div>
+          }
+        </dl>
+
+        @if (a.estatus === 'pendiente') {
+          <div class="mt-5 flex flex-col gap-3">
+            <app-input-enhanced
+              label="Folio de memorándum u oficio"
+              placeholder="SEMOVI/XXX/000/2026"
+              [control]="folio"
+              [fullWidth]="true"
+              [optional]="true">
+            </app-input-enhanced>
+            <app-input-enhanced
+              label="Observaciones"
+              type="textarea"
+              [rows]="3"
+              [control]="observaciones"
+              [fullWidth]="true"
+              [optional]="true">
+            </app-input-enhanced>
+          </div>
+        }
+      }
+
+      <div slot="footer" class="flex justify-end gap-2">
+        <app-institutional-button [config]="{ variant: 'secondary', size: 'sm' }" (clicked)="cerrarDetalle()">
+          Cerrar
+        </app-institutional-button>
+        @if (alertaSeleccionada()?.estatus === 'pendiente') {
+          <app-institutional-button
+            [config]="{ variant: 'primary', size: 'sm', icon: 'task_alt', iconPosition: 'left', loading: validando(), disabled: validando() }"
+            (clicked)="validar()">
+            Validar
+          </app-institutional-button>
+        }
+      </div>
+    </app-modal>
   `,
 })
 export class InicioCoordinacionComponent implements OnInit {
   protected readonly store = inject(InicioCoordinacionStore);
   private readonly notifications = inject(NotificationService);
-  private readonly auth = inject(OidcAuthService);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly secciones: SeccionNav[] = [
-    { id: 'inicio', label: 'Inicio', disponible: true },
-    { id: 'dialogo', label: 'Diálogo y concertación', disponible: false },
-    { id: 'reportes', label: 'Reportes', disponible: false },
-    { id: 'administracion', label: 'Administración', disponible: false },
+  readonly secciones: PillTab[] = [
+    { id: 'inicio', label: 'Inicio' },
+    { id: 'dialogo', label: 'Diálogo y concertación', disabled: true, hint: 'Próximamente' },
+    { id: 'reportes', label: 'Reportes', disabled: true, hint: 'Próximamente' },
+    { id: 'administracion', label: 'Administración', disabled: true, hint: 'Próximamente' },
   ];
 
+  readonly estatusAlerta = ESTATUS_ALERTA_MAP;
+  readonly usuario = inject(CurrentUserService).getInfo();
   readonly seccionActiva = signal('inicio');
   readonly alertaSeleccionada = signal<AlertaModificacionDto | null>(null);
   readonly validando = signal(false);
-  readonly usuario = this.resolverUsuario();
+  readonly folio = new FormControl('', { nonNullable: true });
+  readonly observaciones = new FormControl('', { nonNullable: true });
 
   ngOnInit(): void {
     this.store.cargarTodo();
   }
 
-  onValidar({ id, body }: { id: string; body: ValidarAlertaDto }): void {
+  abrirDetalle(alerta: AlertaModificacionDto): void {
+    this.folio.reset(alerta.folio ?? '');
+    this.observaciones.reset('');
+    this.alertaSeleccionada.set(alerta);
+  }
+
+  cerrarDetalle(): void {
+    this.alertaSeleccionada.set(null);
+  }
+
+  validar(): void {
+    const alerta = this.alertaSeleccionada();
+    if (!alerta || this.validando()) return;
     this.validando.set(true);
-    this.store.validarAlerta(id, body)
+    this.store.validarAlerta(alerta.id, {
+      folio: this.folio.value.trim() || null,
+      observaciones: this.observaciones.value.trim() || null,
+    })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.validando.set(false);
-          this.alertaSeleccionada.set(null);
+          this.cerrarDetalle();
           this.notifications.success('Alerta validada', 'La modificación quedó registrada como recibida.');
         },
         error: (e: { message?: string }) => {
@@ -136,14 +229,5 @@ export class InicioCoordinacionComponent implements OnInit {
           this.notifications.error('No se pudo validar', e?.message ?? 'Intenta de nuevo.');
         },
       });
-  }
-
-  private resolverUsuario(): { nombre: string; area: string } {
-    const user = this.auth.getCurrentUser();
-    const emp = user?.employee;
-    const nombre = emp
-      ? [emp.firstName, emp.lastName].filter(Boolean).join(' ')
-      : user?.email?.split('@')[0] ?? 'Coordinación Técnica';
-    return { nombre, area: emp?.area?.name ?? 'Coordinación Técnica' };
   }
 }

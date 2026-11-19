@@ -5,21 +5,15 @@ import { AsyncStateWrapperComponent } from '@/app/shared/components/async-state-
 import { EntityStatusPillComponent } from '@/app/shared/components/entity-status-pill/entity-status-pill.component';
 import { InstitutionalButtonComponent } from '@/app/shared/components/buttons/institutional-button/institutional-button.component';
 import { InstitutionalTableComponent, TableColumn } from '@/app/shared/components/tables';
-import { CumplimientoSemanalDto } from '../../models/inicio-coordinacion.models';
-import { ESTATUS_CUMPLIMIENTO_MAP, FORMATO_FECHA_HORA } from '../../models/inicio-coordinacion.estatus';
+import { CumplimientoSemanalDto } from '../../models/coordination.model';
+import { ESTATUS_CUMPLIMIENTO_MAP } from '../../models/week-status.model';
 
-/** Tabla paginada del cumplimiento semanal por área. */
+/** Monitor de Cumplimiento Semanal: tabla paginada por área. */
 @Component({
-  selector: 'app-monitor-cumplimiento',
+  selector: 'app-compliance-monitor',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    DatePipe,
-    AsyncStateWrapperComponent,
-    EntityStatusPillComponent,
-    InstitutionalButtonComponent,
-    InstitutionalTableComponent,
-  ],
+  imports: [DatePipe, AsyncStateWrapperComponent, EntityStatusPillComponent, InstitutionalButtonComponent, InstitutionalTableComponent],
   template: `
     <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-5" aria-labelledby="monitor-titulo">
       <header class="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-4">
@@ -30,8 +24,8 @@ import { ESTATUS_CUMPLIMIENTO_MAP, FORMATO_FECHA_HORA } from '../../models/inici
           </p>
         </div>
         <ul class="flex flex-wrap gap-2" aria-label="Simbología de estatus">
-          @for (estatus of leyenda; track estatus) {
-            <li><app-entity-status-pill [status]="estatus" [map]="estatusMap"></app-entity-status-pill></li>
+          @for (e of leyenda; track e) {
+            <li><app-entity-status-pill [status]="e" [map]="estatusMap"></app-entity-status-pill></li>
           }
         </ul>
       </header>
@@ -78,13 +72,13 @@ import { ESTATUS_CUMPLIMIENTO_MAP, FORMATO_FECHA_HORA } from '../../models/inici
       <span class="font-semibold text-gray-900">{{ item.area }}</span>
     </ng-template>
     <ng-template #semanaTpl let-item>Semana {{ item.semanaReportada }}</ng-template>
-    <ng-template #fechaTpl let-item>{{ item.ultimaActualizacion | date: formatoFecha }}</ng-template>
+    <ng-template #fechaTpl let-item>{{ item.ultimaActualizacion | date: "dd/MM/yyyy '·' HH:mm" }}</ng-template>
     <ng-template #estatusTpl let-item>
       <app-entity-status-pill [status]="item.estatus" [map]="estatusMap"></app-entity-status-pill>
     </ng-template>
   `,
 })
-export class MonitorCumplimientoComponent implements OnInit {
+export class ComplianceMonitorComponent implements OnInit {
   readonly items = input<CumplimientoSemanalDto[]>([]);
   readonly meta = input.required<PaginationMeta>();
   readonly loading = input(false);
@@ -99,8 +93,6 @@ export class MonitorCumplimientoComponent implements OnInit {
 
   readonly estatusMap = ESTATUS_CUMPLIMIENTO_MAP;
   readonly leyenda = Object.keys(ESTATUS_CUMPLIMIENTO_MAP);
-  readonly formatoFecha = FORMATO_FECHA_HORA;
-
   columns: TableColumn[] = [];
 
   ngOnInit(): void {
