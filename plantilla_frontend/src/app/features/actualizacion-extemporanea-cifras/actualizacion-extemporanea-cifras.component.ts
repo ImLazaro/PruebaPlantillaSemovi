@@ -4,7 +4,7 @@ import {
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { AsyncStateWrapperComponent } from '@/app/shared/components/async-state-wrapper/async-state-wrapper.component';
-import { DashboardHeaderComponent } from '@/app/shared/components/dashboard-header/dashboard-header.component';
+import { AvatarComponent } from '@/app/shared/components/avatar/avatar.component';
 import { InfoBannerComponent } from '@/app/shared/components/info-banner/info-banner.component';
 import { InputComponent } from '@/app/shared/components/inputs/input-wrapper/input.component';
 import { FileInputComponent } from '@/app/shared/components/inputs/file-input/file-input.component';
@@ -14,6 +14,7 @@ import { InstitutionalButtonComponent } from '@/app/shared/components/buttons/in
 import { InstitutionalTableComponent, TableColumn } from '@/app/shared/components/tables';
 import { ModalComponent } from '@/app/shared/components/modals/modal/modal.component';
 import { NotificationService } from '@/app/shared/lib/services/notification.service';
+import { OidcAuthService } from '@/app/core/auth';
 import {
   CifrasHMO,
   ContextoActualizacionDto,
@@ -21,7 +22,6 @@ import {
   TramiteCifrasDto,
 } from '../models/actualizacion-extemporanea-cifras.model';
 import { ActualizacionExtemporaneaDataSource } from '../services/actualizacion-extemporanea-cifras.service';
-import { CurrentUserService } from '../services/current-user.service';
 
 const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
@@ -55,7 +55,7 @@ const CIFRA_VALIDATORS = [Validators.required, Validators.min(0), Validators.pat
   imports: [
     ReactiveFormsModule,
     AsyncStateWrapperComponent,
-    DashboardHeaderComponent,
+    AvatarComponent,
     FileInputComponent,
     InfoBannerComponent,
     InputComponent,
@@ -67,12 +67,19 @@ const CIFRA_VALIDATORS = [Validators.required, Validators.min(0), Validators.pat
   ],
   template: `
     <div class="flex flex-col gap-4 pb-24">
-      <app-dashboard-header
-        title="SISER 2.0"
-        subtitle="Sistema de Registro, Seguimiento y Concertación Institucional"
-        [userName]="usuario.nombre"
-        [userTitle]="contexto()?.area?.nombre ?? usuario.area">
-      </app-dashboard-header>
+      <header class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h1 class="text-xl font-bold text-gray-900">SISER 2.0</h1>
+          <p class="text-xs text-gray-500">Sistema de Registro, Seguimiento y Concertación Institucional</p>
+        </div>
+        <div class="flex items-center gap-3 border border-gray-200 rounded-xl px-3 py-2 self-start sm:self-auto">
+          <app-avatar [name]="usuario.nombre" [config]="{ size: 'sm', variant: 'primary' }"></app-avatar>
+          <div class="leading-tight">
+            <p class="text-sm font-semibold uppercase text-gray-900">{{ usuario.nombre }}</p>
+            <p class="text-xs uppercase text-gray-500">{{ contexto()?.area?.nombre ?? usuario.area }}</p>
+          </div>
+        </div>
+      </header>
 
       <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex flex-col gap-4" aria-labelledby="ae-titulo">
         <!-- Encabezado de sección -->
@@ -274,7 +281,7 @@ export class ActualizacionExtemporaneaCifrasComponent implements OnInit {
   @ViewChild('accionTpl', { static: true }) private accionTpl!: TemplateRef<unknown>;
 
   readonly esDemo = this.dataSource.esDemo;
-  readonly usuario = inject(CurrentUserService).getInfo('Usuario');
+  readonly usuario = this.resolverUsuario();
 
   // --- Contexto (área y semanas vencidas)
   readonly contexto = signal<ContextoActualizacionDto | null>(null);
@@ -425,6 +432,15 @@ export class ActualizacionExtemporaneaCifrasComponent implements OnInit {
       [t.id]: { hombres: Number(v.hombres), mujeres: Number(v.mujeres), otros: Number(v.otros) },
     }));
     this.cerrarEdicion();
+  }
+
+  private resolverUsuario(): { nombre: string; area: string } {
+    const user = inject(OidcAuthService).getCurrentUser();
+    const emp = user?.employee;
+    const nombre = emp
+      ? [emp.firstName, emp.lastName].filter(Boolean).join(' ')
+      : user?.email?.split('@')[0] ?? 'Usuario';
+    return { nombre, area: emp?.area?.name ?? '' };
   }
 
   enviar(): void {
