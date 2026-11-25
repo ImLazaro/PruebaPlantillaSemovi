@@ -3,12 +3,16 @@ import { secureAuthGuard } from './core/auth';
 import { environment } from '../environments/environment';
 import { provideInicioCoordinacion } from './features/services/coordination.service';
 import { provideActualizacionExtemporanea } from './features/services/actualizacion-extemporanea-cifras.service';
+import { provideReportesEstadisticas } from './features/services/reportes-estadisticas-consolidadas.service';
 
 const loadInicioCoordinacion = () => import('./features/inicio-coordinacion/inicio-coordinacion.component')
   .then(m => m.InicioCoordinacionComponent);
 const loadActualizacionExtemporanea = () =>
   import('./features/actualizacion-extemporanea-cifras/actualizacion-extemporanea-cifras.component')
     .then(m => m.ActualizacionExtemporaneaCifrasComponent);
+const loadReportesEstadisticas = () =>
+  import('./features/reportes-estadisticas-consolidadas/reportes-estadisticas-consolidadas.component')
+    .then(m => m.ReportesEstadisticasConsolidadasComponent);
 
 /** Rutas base de la plantilla. Las features del nuevo producto se agregan aquí. */
 export const routes: Routes = [
@@ -55,6 +59,13 @@ export const routes: Routes = [
     providers: provideActualizacionExtemporanea({ useMock: true }),
     canActivate: [secureAuthGuard],
   },
+  {
+    path: 'reportes',
+    loadComponent: loadReportesEstadisticas,
+    // Cambiar useMock a false cuando el backend exponga los endpoints de features/models/reportes-estadisticas-consolidadas.model.ts
+    providers: provideReportesEstadisticas({ useMock: true }),
+    canActivate: [secureAuthGuard],
+  },
   // Vistas previas sin autenticación, solo en desarrollo (no existen en producción).
   ...(environment.production ? [] : [
     {
@@ -66,6 +77,11 @@ export const routes: Routes = [
       path: 'preview/actualizacion-extemporanea',
       loadComponent: loadActualizacionExtemporanea,
       providers: provideActualizacionExtemporanea({ useMock: true }),
+    },
+    {
+      path: 'preview/reportes',
+      loadComponent: loadReportesEstadisticas,
+      providers: provideReportesEstadisticas({ useMock: true }),
     },
   ]),
   {
