@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormControl } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AsyncStateWrapperComponent } from '@/app/shared/components/async-state-wrapper/async-state-wrapper.component';
 import { DashboardHeaderComponent } from '@/app/shared/components/dashboard-header/dashboard-header.component';
-import { EntityStatusPillComponent } from '@/app/shared/components/entity-status-pill/entity-status-pill.component';
+import { DetailItem, DetailsCoordinationComponent } from '@/app/shared/components/details-coordination/details-coordination';
 import { InputComponent } from '@/app/shared/components/inputs/input-wrapper/input.component';
 import { InstitutionalButtonComponent } from '@/app/shared/components/buttons/institutional-button/institutional-button.component';
 import { KpiCardComponent } from '@/app/shared/components/kpi-card/kpi-card.component';
@@ -26,10 +26,9 @@ import { ExtemporaneousAlertsComponent } from './extemporaneous-alerts/extempora
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    DatePipe,
     AsyncStateWrapperComponent,
     DashboardHeaderComponent,
-    EntityStatusPillComponent,
+    DetailsCoordinationComponent,
     InputComponent,
     InstitutionalButtonComponent,
     KpiCardComponent,
@@ -43,8 +42,8 @@ import { ExtemporaneousAlertsComponent } from './extemporaneous-alerts/extempora
       <app-dashboard-header
         title="SISER 2.0"
         subtitle="Coordinación Técnica · Supervisión institucional"
-        [userName]="usuario.nombre"
-        [userTitle]="usuario.area">
+        [userLabel]="userName()"
+        [userDetail]="areaName() || 'Coordinación Técnica'">
       </app-dashboard-header>
 
       <app-pill-tabs
@@ -114,30 +113,7 @@ import { ExtemporaneousAlertsComponent } from './extemporaneous-alerts/extempora
       [trapFocus]="true"
       (modalClose)="cerrarDetalle()">
       @if (alertaSeleccionada(); as a) {
-        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
-          <div>
-            <dt class="text-xs uppercase tracking-wide text-gray-500">Fecha y hora</dt>
-            <dd class="font-semibold text-gray-900">{{ a.fechaHora | date: "dd/MM/yyyy '·' HH:mm" }}</dd>
-          </div>
-          <div>
-            <dt class="text-xs uppercase tracking-wide text-gray-500">Semana afectada</dt>
-            <dd class="font-semibold text-gray-900">Semana {{ a.semanaAfectada }}</dd>
-          </div>
-          <div>
-            <dt class="text-xs uppercase tracking-wide text-gray-500">Estatus</dt>
-            <dd><app-entity-status-pill [status]="a.estatus" [map]="estatusAlerta"></app-entity-status-pill></dd>
-          </div>
-          <div>
-            <dt class="text-xs uppercase tracking-wide text-gray-500">Memorándum / Oficio</dt>
-            <dd class="font-mono text-xs text-gray-900">{{ a.folio || 'Sin folio registrado' }}</dd>
-          </div>
-          @if (a.descripcion) {
-            <div class="sm:col-span-2">
-              <dt class="text-xs uppercase tracking-wide text-gray-500">Descripción</dt>
-              <dd class="text-gray-700">{{ a.descripcion }}</dd>
-            </div>
-          }
-        </dl>
+        <app-details-coordination [items]="detalleItems()"></app-details-coordination>
 
         @if (a.estatus === 'pendiente') {
           <div class="mt-5 flex flex-col gap-3">
@@ -179,6 +155,7 @@ export class InicioCoordinacionComponent implements OnInit {
   protected readonly store = inject(InicioCoordinacionStore);
   private readonly notifications = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly datePipe = new DatePipe('en-US');
 
   readonly secciones: PillTab[] = [
     { id: 'inicio', label: 'Inicio' },
@@ -187,8 +164,22 @@ export class InicioCoordinacionComponent implements OnInit {
     { id: 'administracion', label: 'Administración', disabled: true, hint: 'Próximamente' },
   ];
 
-  readonly estatusAlerta = ESTATUS_ALERTA_MAP;
-  readonly usuario = inject(CurrentUserService).getInfo();
+  /** Detalle de la alerta seleccionada para el modal. */
+  readonly detalleItems = computed<DetailItem[]>(() => {
+    const a = this.alertaSeleccionada();
+    if (!a) return [];
+    const estatus = ESTATUS_ALERTA_MAP[a.estatus];
+    return [
+      { label: 'Fecha y hora', value: this.datePipe.transform(a.fechaHora, "dd/MM/yyyy '·' HH:mm") },
+      { label: 'Semana afectada', value: `Semana ${a.semanaAfectada}` },
+      { label: 'Estatus', value: estatus.label, badge: { variant: estatus.variant } },
+      { label: 'Memorándum / Oficio', value: a.folio || 'Sin folio registrado', mono: true },
+      ...(a.descripcion ? [{ label: 'Descripción', value: a.descripcion, fullWidth: true }] : []),
+    ];
+  });
+  private readonly currentUser = inject(CurrentUserService);
+  protected readonly userName = this.currentUser.fullName;
+  protected readonly areaName = this.currentUser.areaName;
   readonly seccionActiva = signal('inicio');
   readonly alertaSeleccionada = signal<AlertaModificacionDto | null>(null);
   readonly validando = signal(false);

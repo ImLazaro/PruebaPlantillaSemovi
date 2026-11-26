@@ -1,22 +1,19 @@
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable } from '@angular/core';
 import { OidcAuthService } from '@/app/core/auth';
-
-export interface CurrentUserInfo {
-  nombre: string;
-  area: string;
-}
 
 /** Datos del usuario en sesión listos para mostrar en las vistas. */
 @Injectable({ providedIn: 'root' })
 export class CurrentUserService {
   private readonly auth = inject(OidcAuthService);
 
-  getInfo(fallbackArea = 'Coordinación Técnica'): CurrentUserInfo {
+  /** Nombre para mostrar; si no hay empleado asociado, la parte local del correo. */
+  readonly fullName = computed(() => {
     const user = this.auth.getCurrentUser();
     const emp = user?.employee;
-    const nombre = emp
-      ? [emp.firstName, emp.lastName].filter(Boolean).join(' ')
-      : user?.email?.split('@')[0] ?? fallbackArea;
-    return { nombre, area: emp?.area?.name ?? fallbackArea };
-  }
+    if (emp) return [emp.firstName, emp.lastName].filter(Boolean).join(' ');
+    return user?.email?.split('@')[0] ?? 'Usuario';
+  });
+
+  /** Área del empleado en sesión (vacío si no tiene). */
+  readonly areaName = computed(() => this.auth.getCurrentUser()?.employee?.area?.name ?? '');
 }

@@ -10,6 +10,10 @@ const loadInicioCoordinacion = () => import('./features/inicio-coordinacion/inic
 const loadActualizacionExtemporanea = () =>
   import('./features/actualizacion-extemporanea-cifras/actualizacion-extemporanea-cifras.component')
     .then(m => m.ActualizacionExtemporaneaCifrasComponent);
+const loadInicio = () => import('./features/inicio/inicio.component')
+  .then(m => m.InicioComponent);
+const loadCapturaSemanal = () => import('./features/captura-semanal/capture-week.component')
+  .then(m => m.CapturaSemanalComponent);
 const loadReportesEstadisticas = () =>
   import('./features/reportes-estadisticas-consolidadas/reportes-estadisticas-consolidadas.component')
     .then(m => m.ReportesEstadisticasConsolidadasComponent);
@@ -60,6 +64,16 @@ export const routes: Routes = [
     canActivate: [secureAuthGuard],
   },
   {
+    path: 'inicio',
+    loadComponent: loadInicio,
+    canActivate: [secureAuthGuard],
+  },
+  {
+    path: 'captura-semanal',
+    loadComponent: loadCapturaSemanal,
+    canActivate: [secureAuthGuard],
+  },
+  {
     path: 'reportes',
     loadComponent: loadReportesEstadisticas,
     // Cambiar useMock a false cuando el backend exponga los endpoints de features/models/reportes-estadisticas-consolidadas.model.ts
@@ -77,6 +91,14 @@ export const routes: Routes = [
       path: 'preview/actualizacion-extemporanea',
       loadComponent: loadActualizacionExtemporanea,
       providers: provideActualizacionExtemporanea({ useMock: true }),
+    },
+    {
+      path: 'preview/inicio',
+      loadComponent: loadInicio,
+    },
+    {
+      path: 'preview/captura-semanal',
+      loadComponent: loadCapturaSemanal,
     },
     {
       path: 'preview/reportes',

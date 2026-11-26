@@ -18,13 +18,13 @@ import { AvatarComponent } from '../avatar/avatar.component';
           <p class="text-xs text-gray-500">{{ subtitle() }}</p>
         }
       </div>
-      @if (userName()) {
+      @if (userLabel()) {
         <div class="flex items-center gap-3 border border-gray-200 rounded-xl px-3 py-2 self-start sm:self-auto">
-          <app-avatar [name]="userName()" [config]="{ size: 'sm', variant: 'primary' }"></app-avatar>
+          <app-avatar [name]="userLabel()" [config]="{ size: 'sm', variant: 'primary' }"></app-avatar>
           <div class="leading-tight">
-            <p class="text-sm font-semibold text-gray-900">{{ userTitle() || userName() }}</p>
-            @if (userTitle()) {
-              <p class="text-xs text-gray-500">{{ userName() }}</p>
+            <p class="text-sm font-semibold uppercase text-gray-900">{{ userLabel() }}</p>
+            @if (userDetail()) {
+              <p class="text-xs uppercase text-gray-500">{{ userDetail() }}</p>
             }
           </div>
         </div>
@@ -35,7 +35,8 @@ import { AvatarComponent } from '../avatar/avatar.component';
 export class DashboardHeaderComponent {
   readonly title = input.required<string>();
   readonly subtitle = input('');
-  readonly userName = input('');
-  /** Línea principal de la tarjeta de usuario (p. ej. área). */
-  readonly userTitle = input('');
+  /** Línea principal de la tarjeta de usuario (nombre). */
+  readonly userLabel = input('');
+  /** Línea secundaria de la tarjeta de usuario (p. ej. área). */
+  readonly userDetail = input('');
 }
